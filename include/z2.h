@@ -1812,6 +1812,10 @@ z2_extern z2_particle_ovl_table_t   z2_particle_ovl_table[38];
 z2_extern z2_actor_ovl_table_t      z2_actor_ovl_table[689];
 z2_extern char                      z2_hud_state[];
 z2_extern uint32_t                  z2_event_state_1;
+z2_extern uint8_t                   z2_start_seq_disabled;
+#if Z2_VERSION != NZSJ10
+z2_extern uint16_t                  z2_music_modifier;
+#endif
 z2_extern char                      z2_letter_box_timer[];
 z2_extern char                      z2_cutscene_state[];
 z2_extern z2_gamestate_table_t      z2_gamestate_table[];

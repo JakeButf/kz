@@ -52,7 +52,8 @@ enum cheats {
     /* 0x0B */ CHEAT_RUPEES,
     /* 0x0C */ CHEAT_TURBO,
     /* 0x0D */ CHEAT_FREEZE_TIME,
-    /* 0x0E */ CHEAT_MAX
+    /* 0x0E */ CHEAT_DISABLE_MUSIC,
+    /* 0x0F */ CHEAT_MAX
 };
 
 typedef struct {

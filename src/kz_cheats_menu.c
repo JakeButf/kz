@@ -20,6 +20,7 @@ static struct cheat_item cheat_table[] = {
     { CHEAT_RESTRICTION,    "no item restriction" },
     { CHEAT_ISG,            "isg" },
     { CHEAT_FREEZE_TIME,    "freeze time"},
+    { CHEAT_DISABLE_MUSIC,  "disable music"},
 };
 
 static int cheat_event(event_handler_t *handler, menu_event_t event, void **event_data){

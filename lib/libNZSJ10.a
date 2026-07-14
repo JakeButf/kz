@@ -57,6 +57,7 @@ z2_particle_ovl_table       = 0x801A9330;
 z2_actor_ovl_table          = 0x801A9E60;
 z2_hud_state                = 0x801B4C98;
 z2_event_state_1            = 0x801B4CA0;
+z2_start_seq_disabled       = 0x801D5BF8;
 z2_letter_box_timer         = 0x801B4CE8;
 z2_cutscene_state           = 0x801B8740;
 z2_gamestate_table          = 0x801B87A0;

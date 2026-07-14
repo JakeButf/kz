@@ -198,6 +198,33 @@ static void kz_main(void) {
             z2_file.timespeed = -z2_file.static_ctx->time_speed;
         }
 
+        {
+            static _Bool music_disabled = 0;
+            static uint8_t prev_start_seq_disabled;
+#if Z2_VERSION != NZSJ10
+            static uint16_t prev_music_modifier;
+#endif
+            if(settings->cheats & (1 << CHEAT_DISABLE_MUSIC)) {
+                if(!music_disabled) {
+                    music_disabled = 1;
+                    prev_start_seq_disabled = z2_start_seq_disabled;
+#if Z2_VERSION != NZSJ10
+                    prev_music_modifier = z2_music_modifier;
+#endif
+                }
+                z2_start_seq_disabled = 1;
+#if Z2_VERSION != NZSJ10
+                z2_music_modifier = 1;
+#endif
+            } else if(music_disabled) {
+                music_disabled = 0;
+                z2_start_seq_disabled = prev_start_seq_disabled;
+#if Z2_VERSION != NZSJ10
+                z2_music_modifier = prev_music_modifier;
+#endif
+            }
+        }
+
         if(settings->cheats & (1 << CHEAT_RESTRICTION)) {
             memset(&z2_game.hud_ctx.restriction_flags, 0, 0xC);
             for(int i = 0; i < 4; i++) {
