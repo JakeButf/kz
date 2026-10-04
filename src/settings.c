@@ -55,6 +55,7 @@ void load_default_settings(void){
     settings->cheats = 0;
     settings->memfile_action = 0;
     settings->turbo_type = 0;
+    settings->chest_ri = 0;
     settings->disp_pause_help = 1;
     kz_log("default settings loaded");
 }

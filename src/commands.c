@@ -6,6 +6,7 @@
 #include "z2.h"
 #include "state.h"
 #include "hb_heap.h"
+#include "trainers.h"
 
 struct command kz_commands[KZ_CMD_MAX] = {
     {"toggle menu",         COMMAND_PRESS,  NULL},
@@ -82,6 +83,7 @@ void command_load_state(){
     kz_state_hdr_t *state = kz.states[kz.state_slot];
     if(state != NULL) {
         load_state(state);
+        trainers_reset();
 #ifdef WIIVC
         char name[64];
         hmemcpy(name, state->name, 64);

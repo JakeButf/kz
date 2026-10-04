@@ -129,6 +129,7 @@ menu_t *create_cheats_menu      (void);
 menu_t *create_file_menu        (void);
 menu_t *create_equips_menu      (void);
 menu_t *create_settings_menu    (void);
+menu_t *create_trainers_menu    (void);
 #ifndef LITE
 menu_t *create_states_menu      (void);
 menu_t *create_debug_menu       (void);

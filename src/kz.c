@@ -22,6 +22,7 @@
 #include "vc.h"
 #include "inventory_map.h"
 #include "cache.h"
+#include "trainers.h"
 
 #ifdef WIIVC
 #define CPU_COUNTER 46777500
@@ -113,6 +114,8 @@ static void kz_main(void) {
             }
         }
     }
+
+    trainers_update();
 
     if(settings->lag_counter) {
         int32_t lag_frames = z2_vi_counter + kz.frames_offset - kz.frames;
@@ -553,6 +556,7 @@ static void kz_main(void) {
         gfx_printf_color(x, y - (i * 10), GPACK_RGB24A8(0xFFFFFF, alpha), "%s", log_entry->mesg);
     }
 
+
 #ifdef LITE
     struct item_texture *textures = resource_get(R_Z2_ITEMS);
     for(int i = 0;i < Z2_ITEM_END;i++){
@@ -678,10 +682,12 @@ static void init(void) {
     menu_submenu_add(&kz.main_menu, 0, Y + 2, "equips", create_equips_menu());
     menu_submenu_add(&kz.main_menu, 0, Y + 3, "file", create_file_menu());
 #ifndef LITE
-    menu_submenu_add(&kz.main_menu, 0, Y + 4, "debug", create_debug_menu());
-    menu_submenu_add(&kz.main_menu, 0, Y + 5, "settings", create_settings_menu());
+    menu_submenu_add(&kz.main_menu, 0, Y + 4, "trainers", create_trainers_menu());
+    menu_submenu_add(&kz.main_menu, 0, Y + 5, "debug", create_debug_menu());
+    menu_submenu_add(&kz.main_menu, 0, Y + 6, "settings", create_settings_menu());
 #else
-    menu_submenu_add(&kz.main_menu, 0, Y + 4, "settings", create_settings_menu());
+    menu_submenu_add(&kz.main_menu, 0, Y + 4, "trainers", create_trainers_menu());
+    menu_submenu_add(&kz.main_menu, 0, Y + 5, "settings", create_settings_menu());
 #endif
 #undef Y
 

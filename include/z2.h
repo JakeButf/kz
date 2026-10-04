@@ -1329,7 +1329,9 @@ typedef struct {
     /* 0x046E0  0x046E0 */ z2_skybox_ctxt_t    skybox_ctx;
     /* 0x04900  0x04900 */ char                unk_0x4900[0x11F00];
     /* 0x16800  0x16800 */ void               *message_bg_tex;
-    /* 0x16804  0x16804 */ char                unk_0x16804[0xE];
+    /* 0x16804  0x16804 */ char                unk_0x16804[0x8];
+    /* 0x1680C  0x1680C */ uint16_t            message_text_id;
+    /* 0x1680E  0x1680E */ char                unk_0x1680E[0x4];
     /* 0x16812  0x16812 */ uint8_t             message_bg_type;
     /* 0x16813  0x16813 */ char                unk_0x16813[0x17];
     /* 0x1682A  0x1682A */ uint8_t             message_state_1;
@@ -1774,6 +1776,7 @@ z2_extern void          z2_load_pause_map           (z2_game_t *game, void *ptr)
 z2_extern uint32_t      z2_get_mmap_tile_size       (uint16_t map_id);
 z2_extern int           z2_get_map_type             (z2_game_t *game);
 z2_extern void          z2_btnupdate                (z2_game_t *game, uint8_t btn_idx);
+z2_extern int           z2_Play_InCsMode            (z2_game_t *game);
 z2_extern void          z2_ActionLabelUpdate        (z2_hud_ctxt_t *hud_ctx, uint16_t action, int btn_idx);
 z2_extern void          z2_LoadRoom                 (z2_game_t *game, z2_room_ctxt_t *room_ctx, uint8_t room_id);
 z2_extern void          z2_DrawRoom                 (z2_game_t *game, z2_room_t *room);

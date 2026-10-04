@@ -1,7 +1,7 @@
 PACKAGE            ?= $(NAME)
-PACKAGE_URL        ?= github.com/krimtonz/kz
+PACKAGE_URL        ?= github.com/jakebutf/kz
 ifeq ($(origin PACKAGE_VERSION), undefined)
-PACKAGE_VERSION	   := $(shell git describe --tags --dirty 2>/dev/null)
+PACKAGE_VERSION	   := v0.3.0-jakefork
 ifeq ('$(PACKAGE_VERSION)', '')
 PACKAGE_VERSION		= unknown version
 endif

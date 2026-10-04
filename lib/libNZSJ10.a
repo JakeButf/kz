@@ -29,6 +29,7 @@ z2_CreateSkyboxVtx          = 0x801475B8;
 z2_LoadSkyboxData           = 0x80147794;
 z2_MotionBlur               = 0x80160F20;
 z2_draw_room_1_hook         = 0x80164BC0;
+z2_Play_InCsMode            = 0x8016534C;
 z2_draw_room_2_hook         = 0x80164BD8;
 z2_draw_actors_hook         = 0x80164CA0;
 z2_motion_blur_hook         = 0x80164DE8;
