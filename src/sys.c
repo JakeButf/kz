@@ -89,7 +89,9 @@ typedef struct {
     };
 } hb_fat_regs_t;
 
-#define hb_fat ((volatile hb_fat_regs_t*)0xA9058000)
+#define hb_fat ((volatile hb_fat_regs_t*)0xA9060000)
+#define HB_BARRIER() __asm__ volatile("" ::: "memory")
+#define HB_COMMAND(cmd) do { HB_BARRIER(); hb_fat->command = (cmd); HB_BARRIER(); } while(0)
 
 typedef struct {
     void *dir;
@@ -114,7 +116,7 @@ int open(const char *path, int open_flags, ...) {
     hb_fat->open.mode = mode;
     va_end(va);
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_OPEN;
+    HB_COMMAND(SYS_OPEN);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -136,7 +138,7 @@ DIR *opendir(const char *dir) {
 
     hb_fat->opendir.dir = dir;
     hb_fat->n64_buffer = &dir_desc->dir;
-    hb_fat->command = SYS_OPEN_DIR;
+    HB_COMMAND(SYS_OPEN_DIR);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -153,7 +155,7 @@ int closedir(DIR *dir) {
 
     hb_fat->close_dir.dir = dir_desc->dir;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_CLOSE_DIR;
+    HB_COMMAND(SYS_CLOSE_DIR);
 
     free(dir_desc);
 
@@ -171,7 +173,7 @@ dirent_t *readdir(DIR *dir) {
     hb_fat->read_dir.dir = dir_desc->dir;
     hb_fat->read_dir.buf = &dir_desc->dirent;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_READ_DIR;
+    HB_COMMAND(SYS_READ_DIR);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -191,7 +193,7 @@ int write(int file, void *buf, uint32_t byte_cnt) {
     hb_fat->write.buf = buf;
     hb_fat->write.byte_cnt = byte_cnt;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_WRITE;
+    HB_COMMAND(SYS_WRITE);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -207,7 +209,7 @@ int read(int file, void *buf, uint32_t byte_cnt) {
     hb_fat->read.buf = buf;
     hb_fat->read.byte_cnt = byte_cnt;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_READ;
+    HB_COMMAND(SYS_READ);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -221,7 +223,7 @@ int close(int file) {
 
     hb_fat->close.fd = file;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_CLOSE;
+    HB_COMMAND(SYS_CLOSE);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -233,7 +235,7 @@ int close(int file) {
 char *getcwd(char *buf, size_t size) {
     hb_fat->getcwd.buf = buf;
     hb_fat->getcwd.size = size;
-    hb_fat->command = SYS_GET_CWD;
+    HB_COMMAND(SYS_GET_CWD);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -248,7 +250,7 @@ int stat(const char *path, struct stat *buf) {
     hb_fat->stat.path = path;
     hb_fat->stat.stat = buf;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_STAT;
+    HB_COMMAND(SYS_STAT);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -262,7 +264,7 @@ int chdir(const char *path) {
 
     hb_fat->chdir.path =path;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_CHDIR;
+    HB_COMMAND(SYS_CHDIR);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -277,7 +279,7 @@ int mkdir(const char *path, mode_t mode) {
     hb_fat->mkdir.path = path;
     hb_fat->mkdir.mode = mode;
     hb_fat->n64_buffer = &ret;
-    hb_fat->command = SYS_MKDIR;
+    HB_COMMAND(SYS_MKDIR);
 
     if(hb_fat->err) {
         errno = hb_fat->err;
@@ -289,8 +291,8 @@ int mkdir(const char *path, mode_t mode) {
 int reset_disk(void) {
     volatile int ret;
 
-    hb_fat->command = SYS_RESET;
     hb_fat->n64_buffer = &ret;
+    HB_COMMAND(SYS_RESET);
 
     if(hb_fat->err) {
         errno = hb_fat->err;

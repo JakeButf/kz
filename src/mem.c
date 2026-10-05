@@ -173,7 +173,7 @@ NOINLINE void *realloc(void *ptr, size_t size) {
 
     blk = (heap_hdr_t*)((char*)ptr - HDR_SIZE);
     if(blk->size > size && blk->size - size >= HDR_SIZE + HEAP_ALIGN(1)) {
-        next_free = (heap_hdr_t*)((char*)blk + size);
+        next_free = (heap_hdr_t*)((char*)blk + size + HDR_SIZE);
         next_free->free = 1;
         next_free->size = blk->size - size - HDR_SIZE;
         next_free->prev = blk;
@@ -201,7 +201,7 @@ NOINLINE void *realloc(void *ptr, size_t size) {
         return NULL;
     }
 
-    memcpy(new_blk, ptr, blk->size);
+    memcpy(new_blk, ptr, blk->size < size ? blk->size : size);
     free(ptr);
 
     return new_blk;

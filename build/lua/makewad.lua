@@ -1,6 +1,7 @@
 local arg = {...}
 
 local opt_raphnet
+local opt_no_vc_fix
 local opt_out_wad
 local opt_ver
 local opt_titleid
@@ -10,6 +11,9 @@ local in_wad
 while arg[1] do
     if arg[1] == "--raphnet" then
         opt_raphnet = 1
+        table.remove(arg, 1)
+    elseif arg[1] == "--no-vc-fix" then
+        opt_no_vc_fix = 1
         table.remove(arg, 1)
     elseif arg[1] == "--outwad" then
         opt_out_wad = arg[2]
@@ -110,8 +114,13 @@ local gzinject_pack = gzinject ..
         " -p \"" .. emulator_patch .."\"" ..
         " -p \"" .. mapping_patch .. "\""
 
-local vcmake = os.execute("make " .. rom_info.vc_fix_inject .. "/kz-vc.gzi")
-if(vcmake ~= nil and vcmake == true) then
+local vcmake = false
+if(opt_no_vc_fix == nil) then
+    vcmake = os.execute("make " .. rom_info.vc_fix_inject .. "/kz-vc.gzi")
+end
+if(opt_no_vc_fix ~= nil) then
+    print("Skipping vc patches\n")
+elseif(vcmake ~= nil and vcmake == true) then
     gzinject_pack = gzinject_pack ..
         " -p \"" .. rom_info.vc_fix_inject .. "/kz-vc.gzi\"" ..
         " --dol-inject \"" .. rom_info.vc_fix_inject .. "/kz-vc.bin\"" ..
