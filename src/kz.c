@@ -51,7 +51,26 @@ static void cpu_counter(void){
 
 static void kz_main(void) {
     cpu_counter();
-    gfx_begin();
+
+    _Bool hold = 0;
+    {
+        static _Bool holding = 0;
+        static uint32_t hold_gameplay_frames;
+        uint16_t pause_state = z2_game.pause_ctx.state;
+        if(pause_state == Z2_PAUSE_STATE_UNPAUSE_SETUP || pause_state == Z2_PAUSE_STATE_UNPAUSE_CLOSE) {
+            if(!holding) {
+                holding = 1;
+                hold_gameplay_frames = z2_game.gameplay_frames;
+            }
+        } else if(holding && (pause_state != Z2_PAUSE_STATE_OFF || z2_game.gameplay_frames != hold_gameplay_frames)) {
+            holding = 0;
+        }
+        hold = holding && !settings->no_pause_opt;
+    }
+
+    if(!hold) {
+        gfx_begin();
+    }
 
     input_update();
 
@@ -87,7 +106,7 @@ static void kz_main(void) {
     zu_disp_ptr_save(&kz.disp_p);
 
     /* input display */
-    {
+    if(!hold) {
         if(settings->input_display){
             int x = settings->id_x;
             int y = settings->id_y;
@@ -107,7 +126,7 @@ static void kz_main(void) {
     }
 
     /* draw floating watches */
-    {
+    if(!hold) {
         for(watch_t *watch = kz.watches.first; watch != NULL; watch = list_next(watch)) {
             if(watch->floating) {
                 watch_printf(watch, DEFAULT_COLOR);
@@ -115,9 +134,9 @@ static void kz_main(void) {
         }
     }
 
-    trainers_update();
+    trainers_update(!hold);
 
-    if(settings->lag_counter) {
+    if(settings->lag_counter && !hold) {
         int32_t lag_frames = z2_vi_counter + kz.frames_offset - kz.frames;
         gfx_printf(settings->lag_x, settings->lag_y, "%d", lag_frames);
     }
@@ -129,7 +148,7 @@ static void kz_main(void) {
     }
 
     kz.cpu_prev = kz.cpu_cycle_counter;
-    if(settings->timer) {
+    if(settings->timer && !hold) {
         int64_t count = kz.cpu_cycle_counter + kz.cpu_offset;
         int tenths = count / (CPU_COUNTER / 10);
         int seconds = tenths / 10;
@@ -142,7 +161,7 @@ static void kz_main(void) {
     }
 
     /* activate cheats */
-    {
+    if(!hold) {
         if(settings->cheats & (1 << CHEAT_BLAST_MASK)) {
             z2_link.blast_mask_timer = 0x00;
         }
@@ -241,13 +260,13 @@ static void kz_main(void) {
     }
 
     /* collision view / hitbox view */
-    {
+    if(!hold) {
         kz_col_view();
         kz_hitbox_view();
     }
 
     /* handle menu */
-    {
+    if(!hold) {
         void *event_data = NULL;
         menu_t *kz_menu = &kz.main_menu;
         if(kz.menu_active) {
@@ -267,7 +286,7 @@ static void kz_main(void) {
         }
     }
     /* handle command bindings */
-    {
+    if(!hold) {
         z2_pause_ctxt_t *p_ctx = &z2_game.pause_ctx;
         _Bool is_pause = z2_player_ovl_cur == &z2_player_ovl_table[0] && p_ctx->state == 6;
         static _Bool item_update = 0;
@@ -495,6 +514,7 @@ static void kz_main(void) {
         }
     }
 
+    if(!hold) {
     /* print frame advance status */
     if(kz.pending_frames == 0) {
         gfx_draw_sprite(resource_get(R_Z2_ICON), Z2_SCREEN_WIDTH - 40, 20, 3, 20, 20);
@@ -556,6 +576,7 @@ static void kz_main(void) {
         gfx_printf_color(x, y - (i * 10), GPACK_RGB24A8(0xFFFFFF, alpha), "%s", log_entry->mesg);
     }
 
+    }
 
 #ifdef LITE
     struct item_texture *textures = resource_get(R_Z2_ITEMS);
@@ -577,7 +598,9 @@ static void kz_main(void) {
     }
     */
 
-    gfx_finish();
+    if(!hold) {
+        gfx_finish();
+    }
 }
 
 static int main_menu_return_onactivate(event_handler_t *handler, menu_event_t event, void **event_data){

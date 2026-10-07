@@ -168,7 +168,7 @@ void trainers_reset(void) {
     prev_cs = 0;
 }
 
-void trainers_update(void) {
+void trainers_update(_Bool draw) {
     if(settings->chest_ri) {
         chest_ri_update();
 
@@ -180,6 +180,10 @@ void trainers_update(void) {
         }
         prev_pause_state = pause_state;
         prev_mask_state = mask_state;
+
+        if(!draw) {
+            return;
+        }
 
         if(pause_state == RI_PAUSE_DONE && ri_frame - pause_done_frame < CHEST_RI_SHOW_TIME) {
             ri_draw_line(CHEST_RI_Y, "pause", pause_delta);

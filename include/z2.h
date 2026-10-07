@@ -270,6 +270,13 @@ enum pause_page {
     /* 0x03 */ Z2_PAUSE_MASK
 };
 
+enum pause_state {
+    /* 0x00 */ Z2_PAUSE_STATE_OFF,
+    /* 0x06 */ Z2_PAUSE_STATE_MAIN = 0x06,
+    /* 0x1A */ Z2_PAUSE_STATE_UNPAUSE_SETUP = 0x1A,
+    /* 0x1B */ Z2_PAUSE_STATE_UNPAUSE_CLOSE
+};
+
 enum quest_cell {
     /* 0x00 */ Z2_QUEST_ODOWLA,
     /* 0x01 */ Z2_QUEST_GOHT,
@@ -1354,7 +1361,9 @@ typedef struct {
     /* 0x170FB   0x170dB */ char                unk_0x170FB[0xC8D];
     /* 0x17D88   0x17D68 */ z2_obj_ctxt_t       obj_ctx;
     /* 0x186E0   0x186c0 */ z2_room_ctxt_t      room_ctx;
-    /* 0x18768   0x18748 */ char                unk_0x18768[0xE0];
+    /* 0x18768   0x18748 */ char                unk_0x18768[0xD8];
+    /* 0x18840   0x18820 */ uint32_t            gameplay_frames;
+    /* 0x18844   0x18824 */ char                unk_0x18844[0x04];
     /* 0x18848   0x18828 */ uint8_t             room_cnt;
     /* 0x1884C   0x1882C */ z2_rom_file_t      *room_list;
     /* 0x18850   0x18820 */ char                unk_0x18850[0x24];

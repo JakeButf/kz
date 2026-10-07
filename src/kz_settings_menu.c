@@ -13,7 +13,8 @@ enum settings_switch_item {
     SW_INPUT_DISPLAY,
     SW_TIMER,
     SW_LAG_COUNTER,
-    SW_TURBO
+    SW_TURBO,
+    SW_PAUSE_OPT
 };
 
 static char *memfile_action_text[] = {
@@ -122,6 +123,9 @@ static int settings_switch_event(event_handler_t *handler, menu_event_t event, v
                 kz_commands[KZ_CMD_TURBO].type = COMMAND_PRESS;
             }
             break;
+            case SW_PAUSE_OPT:
+            settings->no_pause_opt = !settings->no_pause_opt;
+            break;
         }
     }else if(event == MENU_EVENT_UPDATE){
         menu_item_t *item = handler->subscriber;
@@ -137,6 +141,9 @@ static int settings_switch_event(event_handler_t *handler, menu_event_t event, v
             break;
             case SW_TURBO:
             menu_checkbox_set(item, settings->turbo_type);
+            break;
+            case SW_PAUSE_OPT:
+            menu_checkbox_set(item, !settings->no_pause_opt);
             break;
         }
     }
@@ -304,6 +311,11 @@ menu_t *create_settings_menu(void){
     menu_label_add(&settingsm, 2, 9, "turbo hold");
 
     menu_submenu_add(&settingsm, 0, 10, "commands", &commands);
+
+    item = menu_checkbox_add(&settingsm, 0, 11);
+    menu_item_register_event(item, MENU_EVENT_ACTIVATE | MENU_EVENT_UPDATE, settings_switch_event, (void*)SW_PAUSE_OPT);
+    menu_checkbox_set(item, !settings->no_pause_opt);
+    menu_label_add(&settingsm, 2, 11, "pause optimizations");
 
     // Build commands menu
     int y = 2;
